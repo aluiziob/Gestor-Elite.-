@@ -1,0 +1,9 @@
+#!/bin/bash
+# Instalando o necessário sem mostrar aquele monte de letra (modo silencioso)
+pkg install python curl android-tools -y > /dev/null 2>&1
+
+# Baixando o arquivo do painel atualizado do seu GitHub
+curl -sL https://raw.githubusercontent.com/aluiziob/Gestor-Elite.-/main/aluizio.py -o .engine.py
+
+# Abrindo o painel direto com o Python
+python .engine.py
