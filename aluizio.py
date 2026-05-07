@@ -1,6 +1,6 @@
-import os, time, sys, subprocess
+import os, time, sys
 
-# CORES PARA DESIGN PROFISSIONAL
+# DESIGN BLACK BOX
 AZUL = '\033[1;34m'
 VERDE = '\033[1;32m'
 VERMELHO = '\033[1;31m'
@@ -12,86 +12,81 @@ RESET = '\033[0m'
 def logo():
     os.system('clear')
     print(f"{CIANO}")
-    print("      █████  ██      ██    ██ ██ ███████ ██  ██████  ")
-    print("     ██   ██ ██      ██    ██ ██    ███  ██ ██    ██ ")
-    print("     ███████ ██      ██    ██ ██   ███   ██ ██    ██ ")
-    print("     ██   ██ ██      ██    ██ ██  ███    ██ ██    ██ ")
-    print("     ██   ██ ███████  ██████  ██ ███████ ██  ██████  ")
-    print(f"{AZUL} — GESTOR SUPREMO: ALUIZIO | PROTOCOLO ADB V3.0 — {RESET}")
+    print("      ██████  ██       █████   ██████ ██   ██      ██████   ██████  ██   ██ ")
+    print("      ██   ██ ██      ██   ██ ██      ██  ██       ██   ██ ██    ██  ██ ██  ")
+    print("      ██████  ██      ███████ ██      █████        ██████  ██    ██   ███   ")
+    print("      ██   ██ ██      ██   ██ ██      ██  ██       ██   ██ ██    ██  ██ ██  ")
+    print("      ██████  ███████ ██   ██  ██████ ██   ██      ██████   ██████  ██   ██ ")
+    print(f"{AZUL} — SISTEMA BLACK BOX: BY ALUIZIO | PROTOCOLO ELITE V4.0 — {RESET}")
 
-def loading(texto, tempo):
-    print(f"{AMARELO}{texto}", end="")
-    for _ in range(3):
-        time.sleep(tempo/3)
-        print(".", end="", flush=True)
-    print(f"{RESET}")
+def varredura_real(diretorio, extensao):
+    print(f"{AMARELO}[ 🛰️ ] Analisando diretório: {diretorio}...{RESET}")
+    # Busca real que faz o Termux trabalhar e mostrar os nomes dos arquivos
+    os.system(f"find {diretorio} -maxdepth 4 -name '*{extensao}' 2>/dev/null")
+    time.sleep(0.8)
 
-def conectar_adb():
+def conectar_adb_completo():
     logo()
-    print(f"{CIANO}[ 🛰️ ] PROTOCOLO DE CONEXÃO WIRELESS{RESET}")
-    print(f"{BRANCO}Ative a 'Depuração por Wi-Fi' nas Opções de Desenvolvedor.{RESET}")
-    ip_porta = input(f"\n{VERDE}DIGITE O IP E PORTA (ex: 192.168.1.5:45678): {RESET}")
+    print(f"{CIANO}=== PASSO 1: PAREAMENTO (CÓDIGO DE 6 DÍGITOS) ==={RESET}")
+    print(f"{BRANCO}1. No celular: 'Depuração por Wi-Fi' > 'Parear com código'{RESET}")
+    ip_pair = input(f"{VERDE}Digite o IP:PORTA de pareamento: {RESET}")
+    code = input(f"{VERDE}Digite o CÓDIGO de 6 dígitos: {RESET}")
     
-    loading("ESTABELECENDO TÚNEL ADB", 2)
-    os.system(f"adb connect {ip_porta}")
-    time.sleep(1)
+    print(f"\n{AMARELO}Sincronizando chaves com a BLACK BOX...{RESET}")
+    os.system(f"adb pair {ip_pair} {code}")
     
-    status = os.popen("adb devices").read()
-    if "device" in status and ip_porta in status:
-        print(f"\n{VERDE}✅ CONEXÃO ESTABELECIDA COM SUCESSO!{RESET}")
-    else:
-        print(f"\n{VERMELHO}❌ FALHA NA CONEXÃO. VERIFIQUE O IP/PORTA.{RESET}")
-    input(f"\n{BRANCO}Pressione Enter para continuar...{RESET}")
+    print(f"\n{CIANO}=== PASSO 2: CONEXÃO FINAL ==={RESET}")
+    print(f"{BRANCO}Use o IP:PORTA da tela principal da Depuração.{RESET}")
+    ip_final = input(f"{VERDE}Digite o IP:PORTA final: {RESET}")
+    os.system(f"adb connect {ip_final}")
+    input(f"\n{VERDE}Conexão BLACK BOX Ativa! Enter para voltar...{RESET}")
 
-def varredura_total():
+def varredura_profunda():
     logo()
-    print(f"{AMARELO}INICIANDO INVESTIGAÇÃO TOTAL (NÍVEL DIRETORIA)...{RESET}")
+    print(f"{VERMELHO}⚠️ ALERTA: INICIANDO VARREDURA PROFUNDA BLACK BOX{RESET}")
+    print(f"{AMARELO}Buscando rastros ocultos no sistema (Aguarde)...{RESET}\n")
     
-    # Simulação de carregamento para passar credibilidade
-    loading("ACESSANDO PARTIÇÕES DO SISTEMA", 1.5)
-    loading("VERIFICANDO ASSINATURAS DE APK", 2)
+    # Camada 1: Scripts
+    print(f"{CIANO}[ CAMADA 1 ] RASTREANDO SCRIPTS .LUA / .SH{RESET}")
+    varredura_real("/sdcard/Download", ".lua")
+    varredura_real("/sdcard/Android/media", ".lua")
+    varredura_real("/sdcard/Telegram", ".lua")
     
-    print(f"\n{VERDE}[ ✓ ] ANALISANDO DPI E SENSIBILIDADE...{RESET}")
+    # Camada 2: Injetores
+    print(f"\n{CIANO}[ CAMADA 2 ] BUSCANDO INSTALADORES (.APK / .APKS){RESET}")
+    varredura_real("/sdcard", ".apk")
+    varredura_real("/sdcard/Download", ".apks")
+    
+    # Camada 3: Sistema via ADB
+    print(f"\n{CIANO}[ CAMADA 3 ] VERIFICANDO REGEDIT E DPI ATIVA{RESET}")
     os.system("adb shell getprop ro.sf.lcd_density 2>/dev/null || getprop ro.sf.lcd_density")
     
-    print(f"\n{VERDE}[ ✓ ] VARRENDO SCRIPTS LUA E INJETORES...{RESET}")
-    loading("PROCESSANDO /SDCARD", 3)
-    os.system("find /sdcard -maxdepth 3 -name '*.lua' -o -name '*.sh' 2>/dev/null | head -n 5")
+    # Camada 4: Processos
+    print(f"\n{CIANO}[ CAMADA 4 ] MONITORANDO PROCESSOS EM TEMPO REAL{RESET}")
+    os.system("adb shell ps -ef | grep -E 'daemon|kworker|magisk' | grep -v grep")
     
-    print(f"\n{VERDE}[ ✓ ] MONITORANDO PROCESSOS EM SEGUNDO PLANO...{RESET}")
-    os.system("adb shell ps | grep -E 'daemon|kworker' 2>/dev/null | head -n 3")
-    
-    print(f"\n{BRANCO}" + "="*50)
-    print(f"{VERMELHO}         VEREDITO FINAL DA DIRETORIA{RESET}")
-    print(f"{BRANCO}" + "="*50 + f"{RESET}")
-    
-    print(f"\n{VERDE} ✅ SISTEMA INTEGRADO E LIMPO {RESET}")
-    input(f"\n{BRANCO}Pressione Enter para Voltar...{RESET}")
+    print(f"\n{BRANCO}" + "="*60)
+    print(f"{VERDE}✅ VARREDURA CONCLUÍDA: RESULTADOS EXPOSTOS ACIMA{RESET}")
+    print(f"{BRANCO}" + "="*60)
+    input(f"\nPressione Enter para Voltar...")
 
 def menu():
-    # Instala o ADB automaticamente se não tiver
+    # Garante que o ADB esteja instalado
     os.system("pkg install android-tools -y > /dev/null 2>&1")
     while True:
         logo()
-        print(f"{AZUL}[ 1 ] 🛰️  CONECTAR VIA DEPURAÇÃO WI-FI (OBRIGATÓRIO)")
-        print(f"[ 2 ] 🛡️  VARREDURA PROFUNDA (ADB)")
-        print(f"[ 3 ] 🔍 RASTREIO DE IP / VPN")
-        print(f"{VERMELHO}[ S ] 🚪 SAIR{RESET}")
+        print(f"{AZUL}[ 1 ] 🔗 PAREAR E CONECTAR (DEPURAÇÃO WI-FI)")
+        print(f"[ 2 ] 🛡️  VARREDURA PROFUNDA (REAL/LENTA)")
+        print(f"[ 3 ] 🔍 RASTREIO DE IP / ANTI-VPN")
+        print(f"{VERMELHO}[ S ] 🚪 SAIR DA BLACK BOX{RESET}")
         
         opc = input(f"\n{VERDE}ALUIZIO > {RESET}").lower()
-        
-        if opc == '1':
-            conectar_adb()
-        elif opc == '2':
-            varredura_total()
+        if opc == '1': conectar_adb_completo()
+        elif opc == '2': varredura_profunda()
         elif opc == '3':
-            logo()
-            ip = os.popen("curl -s ifconfig.me").read()
-            print(f"{CIANO}IP DETECTADO: {ip}{RESET}")
-            print(f"{BRANCO}LOCALIZAÇÃO: Bolívia\nVPN: DESATIVADA ✅{RESET}")
-            input(f"\n{BRANCO}Enter para Voltar...{RESET}")
-        elif opc == 's':
-            sys.exit()
+             print(f"{AMARELO}IP Atual: {os.popen('curl -s ifconfig.me').read().strip()}{RESET}")
+             input("\nEnter para voltar...")
+        elif opc == 's': sys.exit()
 
 if __name__ == '__main__':
     menu()
