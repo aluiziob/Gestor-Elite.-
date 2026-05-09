@@ -1,104 +1,118 @@
-import os, time, sys
+import os, time, sys, socket
 
-# Cores Dark Mode
-B = '\033[1;37m' # Branco
-C = '\033[0;90m' # Cinza
-V = '\033[41;1;37m' # Vermelho BG
-G = '\033[42;1;37m' # Verde BG
-A = '\033[1;33m' # Amarelo
-R = '\033[0m' # Reset
-
+# Memória do script para agilizar
+ip_memoria = ""
 conectado = False
+
+def pegar_ip_rede():
+    # Tenta descobrir o IP do seu Wi-Fi automaticamente
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        meu_ip = s.getsockname()[0]
+        s.close()
+        # Sugere a base da rede (ex: 192.168.100.)
+        return ".".join(meu_ip.split('.')[:-1]) + "."
+    except:
+        return "192.168.100."
 
 def logo():
     os.system('clear')
-    print(f"{B}         ● BLACK BOX V13.5 ●{R}")
-    print(f"{B}         DONO: ALUIZIO{R}")
-    print(f"{C}──────────────────────────────────────{R}")
+    print("      ● BLACK BOX V15.0 - MODO AGILIDADE ●")
+    print("      STATUS: " + ("🟢 ONLINE" if conectado else "🔴 OFFLINE"))
+    print("──────────────────────────────────────")
 
 def conectar():
-    global conectado
+    global conectado, ip_memoria
     logo()
-    # Reset inicial para evitar erro de protocolo
+    
+    # Se ainda não temos o IP do jogador, pegamos a base da rede
+    if not ip_memoria:
+        base = pegar_ip_rede()
+        print(f"Rede detectada: {base}X")
+        final = input(f"Complete o IP do jogador (ou Enter para {base}5): ")
+        ip_memoria = final if "." in final else (base + (final if final else "5"))
+
+    print(f"\nCONECTANDO EM: {ip_memoria}")
+    print("──────────────────────────────────────")
+    
+    # IGUAL AO VÍDEO: SÓ AS PORTAS E CÓDIGOS
+    print("[1] PAREAMENTO")
+    porta_p = input("Porta de pareamento (ex: 34525): ")
+    cod_p = input("Código de pareamento (6 dígitos): ")
+    
+    print(f"\n{C}[🔗] Sincronizando chaves...{R}")
+    # Limpa o ADB antes para evitar erro de protocolo dos prints antigos
     os.system("adb kill-server > /dev/null 2>&1")
-    os.system("adb start-server > /dev/null 2>&1")
+    os.system(f"adb pair {ip_memoria}:{porta_p} {cod_p}")
     
-    print(f"{B}PASSO 1: PAREAMENTO{R}")
-    print(f"{C}(Tela com o código de 6 números){R}\n")
-    ip_pair = input("1. IP:PORTA de PAREAMENTO: ")
-    codigo = input("2. CÓDIGO de 6 DÍGITOS: ")
+    print("\n[2] CONEXÃO")
+    porta_c = input("Porta de conexão (ex: 40667): ")
+    os.system(f"adb connect {ip_memoria}:{porta_c}")
     
-    print(f"\n{C}[🔗] Pareando...{R}")
-    pair_cmd = os.popen(f"adb pair {ip_pair} {codigo}").read()
-    
-    if "Successfully paired" in pair_cmd or "connected" in pair_cmd.lower():
-        print(f"{G} PAREAMENTO OK! {R}")
-        print(f"\n{B}PASSO 2: CONEXÃO FINAL{R}")
-        print(f"{C}(IP da tela principal da Depuração){R}\n")
-        ip_final = input("3. IP:PORTA PRINCIPAL: ")
-        os.system(f"adb connect {ip_final}")
-        
-        # Validação se ficou ONLINE
-        check = os.popen("adb devices").read()
-        if "device" in check.split('\n')[1]:
-            print(f"\n{G} ✅ STATUS: ONLINE {R}")
-            conectado = True
-        else:
-            print(f"\n{V} ❌ FALHA NA CONEXÃO FINAL {R}")
-            conectado = False
+    # Validação final
+    check = os.popen("adb devices").read()
+    if "device" in check.split('\n')[1]:
+        print("\n✅ DISPOSITIVO CONECTADO!")
+        conectado = True
     else:
-        print(f"\n{V} ❌ FALHA NO PAREAMENTO {R}")
-        print(f"{A}Dica: Verifique se estão no mesmo Wi-Fi!{R}")
+        print("\n❌ FALHA NA CONEXÃO. Verifique o Wi-Fi.")
         conectado = False
-    input("\nEnter para voltar...")
+    time.sleep(2)
 
 def pente_fino():
-    global conectado
-    logo()
     if not conectado:
-        print(f"{V} ACESSO NEGADO: CONECTE PRIMEIRO (OPÇÃO 1) {R}")
-        input("\nEnter para voltar...")
+        print("\n🔴 ERRO: Use a Opção 1 primeiro!")
+        time.sleep(2)
         return
 
-    print(f"{A}☢️ VARREDURA PROFUNDA INICIADA (1-10 MIN) ☢️{R}")
-    # Busca real usando SHELL no celular do player
-    termos = ["lua", "h4x", "mod", "cheat", "xit", "rege", "v7a", "proxy", "mdm"]
-    pastas = ["/sdcard/Android/data", "/sdcard/Android/obb", "/sdcard/Download"]
+    logo()
+    print("☢️  VARREDURA PENTE FINO (BUSCA DE PROVAS) ☢️\n")
     
+    # Lista de termos suspeitos para o laudo não vir vazio
+    termos = ["lua", "h4x", "mod", "cheat", "rege", "sensi", "macro", "bypass"]
+    pastas = ["/sdcard/Android/data", "/sdcard/Download", "/sdcard/Telegram"]
     provas = []
-    for p in pastas:
-        print(f"{C}[🔍] Periciando: {p}...{R}")
+
+    for pasta in pastas:
+        print(f"🔍 Analisando: {pasta}...")
         for t in termos:
-            cmd = f"adb shell find {p} -iname '*{t}*' 2>/dev/null"
+            # Busca real por arquivos que contenham os termos
+            cmd = f"adb shell find {pasta} -iname '*{t}*' 2>/dev/null"
             res = os.popen(cmd).read().strip()
             if res:
                 for line in res.split('\n'):
-                    print(f"{A}⚠ ACHADO: {line[-50:]}{R}")
                     provas.append(line)
-        time.sleep(3) # Garante que a varredura não seja instantânea e falsa
+        time.sleep(0.5)
 
     logo()
-    print(f"{B}RESULTADO DA PERÍCIA{R}")
+    print("📋 LAUDO DE EVIDÊNCIAS")
+    print("──────────────────────────────────────")
     if provas:
-        print(f"\n STATUS: {V} W.O. DETECTADO {R}")
-        print(f"Evidências encontradas: {len(provas)}")
+        print("STATUS: 🔴 W.O. DETECTADO")
+        print(f"\nARQUIVOS SUSPEITOS ENCONTRADOS ({len(provas)}):")
+        for p in provas:
+            # Mostra o nome do arquivo para provar o que é (ex: rege.lua)
+            print(f" > {p.split('/')[-1]} (Local: {p})")
     else:
-        print(f"\n STATUS: {G} LIMPO {R}")
-    input("\nEnter para concluir...")
+        print("STATUS: 🟢 JOGADOR LIMPO")
+    
+    print("──────────────────────────────────────")
+    input("\nEnter para voltar...")
 
 def menu():
     while True:
         logo()
-        st = f"{G}[ON]{R}" if conectado else f"{V}[OFF]{R}"
-        print(f" CONEXÃO: {st}")
-        print(f"{C}──────────────────────────────────────{R}")
-        print(f"[ 1 ] {B}CONECTAR (3 CÓDIGOS){R}")
-        print(f"[ 2 ] {B}VARREDURA (PENTE FINO){R}")
-        print(f"[ S ] {C}SAIR{R}")
-        opc = input(f"\nALUIZIO > ").lower()
+        print("[ 1 ] CONECTAR (SÓ PORTAS/CÓDIGO)")
+        print("[ 2 ] PENTE FINO (VER LAUDO)")
+        print("[ S ] SAIR / RESETAR IP")
+        opc = input("\nALUIZIO > ").lower()
         if opc == '1': conectar()
         elif opc == '2': pente_fino()
-        elif opc == 's': sys.exit()
+        elif opc == 's': 
+            global ip_memoria
+            ip_memoria = ""
+            sys.exit()
 
 if __name__ == '__main__':
     menu()
