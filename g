@@ -7,7 +7,7 @@ menu_conexao() {
     echo -e "${C}      ● BLACK BOX V16.0 - OFFICIAL ●${N}"
     echo -e "      STATUS: ${R}🔴 OFFLINE${N}"
     echo -e "      ${C}DONO: ALUIZIO${N}"
-    echo -e "${W}──────────────────────────────────────{N}"
+    echo -e "${W}──────────────────────────────────────${N}"
     read -p "$(echo -e "${W}IP DO JOGADOR: ${N}")" ip_alvo
     echo -e "\n${C}[1] SINCRONIZAÇÃO INSTANTÂNEA${N}"
     read -p "PORTA PAREAMENTO: " p1
@@ -34,25 +34,24 @@ menu_pericia() {
     echo -e "${C}      ● BLACK BOX V16.0 - OFFICIAL ●${N}"
     echo -e "      STATUS: ${G}🟢 ONLINE${N}"
     echo -e "      ${C}DONO: ALUIZIO${N}"
-    echo -e "${W}──────────────────────────────────────{N}"
+    echo -e "${W}──────────────────────────────────────${N}"
     echo -e "[ ${G}1{N} ] EXECUTAR PENTE FINO (W.O.)"
     echo -e "[ ${R}S{N} ] DESCONECTAR / SAIR"
-    echo -e "${W}──────────────────────────────────────{N}"
+    echo -e "${W}──────────────────────────────────────${N}"
     read -p "SISTEMA > " opc
 
     if [ "$opc" == "1" ]; then
         echo -e "\n${R}☢️  ESCANEANDO DISPOSITIVO... ☢️${N}"
-        # Busca silenciosa e direta
-        provas=$(adb shell find /sdcard/Android/data /sdcard/Download /sdcard/Telegram -maxdepth 4 \( -iname "*lua*" -o -iname "*h4x*" -o -iname "*mod*" -o -iname "*rege*" -o -iname "*white*" \) 2>/dev/null)
+        # Busca direta focada no W.O.
+        provas=$(adb shell find /sdcard/Android/data /sdcard/Download -maxdepth 4 \( -iname "*lua*" -o -iname "*h4x*" -o -iname "*mod*" -o -iname "*rege*" -o -iname "*white*" \) 2>/dev/null)
         
         echo -e "\n${W}📋 RESULTADO DA VARREDURA:${N}"
         if [ ! -z "$provas" ]; then
             echo -e "${R}STATUS: [ W.O. DETECTADO ]${N}"
-            echo -e "${W}JOGADOR DESCLASSIFICADO.${N}"
         else
             echo -e "${G}STATUS: [ JOGADOR LIMPO ]${N}"
         fi
-        echo -e "${W}──────────────────────────────────────{N}"
+        echo -e "${W}──────────────────────────────────────${N}"
         read -p "ENTER PARA VOLTAR..."
         menu_pericia
     elif [[ "$opc" == "s" || "$opc" == "S" ]]; then
