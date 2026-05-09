@@ -1,89 +1,78 @@
 import os, time, sys
 
-# CORES
-BRANCO = '\033[1;37m'
-CINZA = '\033[0;90m'
-VERMELHO_BG = '\033[41;1;37m'
-VERDE_BG = '\033[42;1;37m'
-AMARELO = '\033[1;33m'
-RESET = '\033[0m'
+# Variável de controle
+conectado = False
 
 def logo():
     os.system('clear')
-    print(f"{BRANCO}         ● BLACK BOX ●{RESET}")
-    print(f"{BRANCO}         DONO: ALUIZIO{RESET}")
-    print(f"{CINZA}──────────────────────────────────────{RESET}")
+    print("         ● BLACK BOX ●")
+    print("         DONO: ALUIZIO")
+    print("──────────────────────────────────────")
 
-def conectar():
+def fluxo_conexao():
+    global conectado
     logo()
-    print(f"{BRANCO}PASSO ÚNICO: PAREAMENTO DE ELITE{RESET}")
-    print(f"{CINZA}Abra: 'Parear dispositivo com código'{RESET}\n")
+    print("PASSO 1: PAREAMENTO (Tela do código de 6 números)")
+    ip_pair = input("1. IP:PORTA de PAREAMENTO: ")
+    codigo = input("2. CÓDIGO de 6 DÍGITOS: ")
     
-    # Exatamente como você pediu: os dois dados da mesma tela
-    ip_porta = input("1. Digite o IP:PORTA (Final de 5 números): ")
-    codigo = input("2. Digite o CÓDIGO (Os 6 números grandes): ")
+    print("\n[🔗] Sincronizando...")
+    os.system(f"adb pair {ip_pair} {codigo}")
     
-    print(f"\n{CINZA}Conectando ao sistema do jogador...{RESET}")
+    print("\nPASSO 2: CONEXÃO FINAL (Tela principal da Depuração)")
+    ip_final = input("3. IP:PORTA PRINCIPAL: ")
     
-    # O comando ADB PAIR faz o vínculo oficial
-    os.system(f"adb pair {ip_porta} {codigo}")
+    print("\n[🚀] Conectando...")
+    os.system(f"adb connect {ip_final}")
     
-    # Tentativa de conexão automática após o pareamento
-    os.system(f"adb connect {ip_porta}")
-    
-    print(f"\n{CINZA}──────────────────────────────────────{RESET}")
+    # Validação real
     check = os.popen("adb devices").read()
     if "device" in check.split('\n')[1]:
-        print(f"{VERDE_BG} ✅ DISPOSITIVO VINCULADO E PRONTO! {RESET}")
+        print("\n✅ DISPOSITIVO VINCULADO!")
+        conectado = True
     else:
-        print(f"{VERMELHO_BG} ❌ ERRO: Verifique se os números estão certos. {RESET}")
-    input("\nEnter para voltar ao Menu...")
+        print("\n❌ FALHA. Tente novamente.")
+        conectado = False
+    input("\nEnter para voltar...")
 
-def varredura_total():
+def varredura_pente_fino():
+    global conectado
     logo()
-    print(f"{AMARELO}☢️ INICIANDO PENTE FINO (VARREDURA PROFUNDA) ☢️{RESET}")
-    print("BUSCANDO RASTROS EM 100% DAS PASTAS...\n")
     
-    provas = []
-    # Busca real via shell dentro do celular do cara
-    termos = ["lua", "h4x", "mod", "cheat", "xit", "rege", "v7a", "inject", "proxy", "mdm"]
-    # Varre as pastas de dados e obb (onde o xit se esconde)
-    pastas = ["/sdcard/Android/data", "/sdcard/Android/obb", "/sdcard/Download"]
+    # TRAVA DE SEGURANÇA
+    if not conectado:
+        print("\033[41m ACESSO NEGADO \033[0m")
+        print("\nVocê precisa CONECTAR (Opção 1) antes de escanear.")
+        input("\nEnter para voltar...")
+        return
 
-    for pasta in pastas:
-        print(f"{CINZA}[🔍] Revistando: {pasta}...{RESET}")
-        for t in termos:
-            # Esse comando 'find' não tem limites, ele vai até o fim
-            resultado = os.popen(f"adb shell find {pasta} -iname '*{t}*' 2>/dev/null").read().strip()
-            if resultado:
-                for linha in resultado.split('\n'):
-                    if linha:
-                        print(f"{AMARELO}⚠ ACHADO: {linha[-55:]}{RESET}")
-                        provas.append(linha)
-        time.sleep(3) # Força a análise demorada para ser real
-
-    logo()
-    print(f"{BRANCO}RELATÓRIO FINAL DE PERÍCIA{RESET}")
-    print(f"{CINZA}──────────────────────────────────────{RESET}")
+    print("☢️ INICIANDO PENTE FINO (1-10 MIN) ☢️")
+    print("ANALISANDO ARQUIVOS, LOGS E PROXIES...\n")
     
-    if provas:
-        print(f"\n STATUS   : {VERMELHO_BG}   W.O. DETECTADO   {RESET}")
-        print(f"\n{BRANCO}O SISTEMA ENCONTROU {len(provas)} EVIDÊNCIAS.{RESET}")
-    else:
-        print(f"\n STATUS   : {VERDE_BG}      LIMPO       {RESET}")
+    # Comando de busca profunda via Shell
+    os.system("adb shell find /sdcard/Android/data -iname '*lua*' -o -iname '*h4x*' -o -iname '*mod*' -o -iname '*rege*'")
     
-    print(f"\n{CINZA}──────────────────────────────────────{RESET}")
-    input("Pressione Enter para fechar...")
+    # Verificação de MDM/Proxy igual ao seu print
+    proxy = os.popen("adb shell dumpsys connectivity | grep -E 'Proxy|mHttpProxy'").read().strip()
+    if proxy:
+        print(f"\n⚠️ PROXY DETECTADO: {proxy}")
+        
+    print("\nVARREDURA CONCLUÍDA.")
+    input("\nEnter para fechar o laudo...")
 
 def menu():
     while True:
         logo()
-        print(f"[ 1 ] {BRANCO}CONECTAR (IP + CÓDIGO DE 6 DÍGITOS){RESET}")
-        print(f"[ 2 ] {BRANCO}VARREDURA TOTAL (SEM FALSO LIMPO){RESET}")
-        print(f"[ S ] {CINZA}SAIR{RESET}")
+        status = "\033[32mON\033[0m" if conectado else "\033[31mOFF\033[0m"
+        print(f"STATUS DE CONEXÃO: [{status}]")
+        print("──────────────────────────────────────")
+        print("[ 1 ] CONECTAR (3 CÓDIGOS)")
+        print("[ 2 ] VARREDURA TOTAL (PENTE FINO)")
+        print("[ S ] SAIR")
+        
         opc = input(f"\nALUIZIO > ").lower()
-        if opc == '1': conectar()
-        elif opc == '2': varredura_total()
+        if opc == '1': fluxo_conexao()
+        elif opc == '2': varredura_pente_fino()
         elif opc == 's': sys.exit()
 
 if __name__ == '__main__':
