@@ -1,6 +1,6 @@
 import os, time, sys
 
-# CORES
+# CORES OFICIAIS
 BRANCO = '\033[1;37m'
 CINZA = '\033[0;90m'
 VERMELHO_BG = '\033[41;1;37m'
@@ -17,87 +17,81 @@ def logo():
 def conectar():
     logo()
     print(f"{BRANCO}PASSO 1: PAREAMENTO{RESET}")
-    print("No celular do player: 'Parear dispositivo com código'")
-    ip_pair = input("Digite o IP:PORTA do código: ")
-    codigo = input("Digite o CÓDIGO de 6 números: ")
+    print("Abra 'Depuração por Wi-Fi' > 'Parear com código'.")
+    ip_pair = input("IP:PORTA DO CÓDIGO: ")
+    codigo = input("CÓDIGO DE 6 DÍGITOS: ")
     
-    print(f"\n{CINZA}Sincronizando...{RESET}")
+    print(f"\n{CINZA}Sincronizando chaves...{RESET}")
     os.system(f"adb pair {ip_pair} {codigo}")
     
     print(f"\n{BRANCO}PASSO 2: CONEXÃO DE DADOS{RESET}")
-    print("Agora volte uma tela e veja o IP:PORTA principal.")
-    ip_final = input("Digite o IP:PORTA da tela inicial: ")
+    print("Volte uma tela e pegue o IP:PORTA principal.")
+    ip_final = input("IP:PORTA FINAL: ")
     os.system(f"adb connect {ip_final}")
     
-    # Verifica se conectou de verdade antes de seguir
+    # Validação Real
     check = os.popen("adb devices").read()
     if "device" in check.split('\n')[1]:
-        input(f"\n{VERDE_BG} ✅ CELULAR VINCULADO COM SUCESSO! {RESET}\nENTER...")
+        print(f"\n{VERDE_BG} ✅ DISPOSITIVO VINCULADO! {RESET}")
     else:
-        input(f"\n{VERMELHO_BG} ❌ FALHA NA CONEXÃO. TENTE NOVAMENTE. {RESET}")
+        print(f"\n{VERMELHO_BG} ❌ ERRO NA CONEXÃO ADB! {RESET}")
+    input("\nEnter para voltar...")
 
 def varredura_total():
     logo()
-    # Verifica se tem algum dispositivo conectado
+    # Bloqueio de varredura falsa
     check = os.popen("adb devices").read()
     if "device" not in check.split('\n')[1]:
-        print(f"{VERMELHO_BG} ERRO: NENHUM CELULAR CONECTADO VIA ADB! {RESET}")
-        print("Conecte primeiro na Opção 1 antes de procurar.")
-        input("\nEnter para voltar...")
+        print(f"{VERMELHO_BG} ERRO: NENHUM CELULAR CONECTADO! {RESET}")
+        input("\nConecte na Opção 1 antes. Enter...")
         return
 
-    print(f"{AMARELO}☢️ INICIANDO PENTE FINO NO SISTEMA DO JOGADOR...{RESET}")
-    print("ISSO VAI DEMORAR. NÃO CANCELE.\n")
+    print(f"{AMARELO}☢️ INICIANDO PENTE FINO (VARREDURA PROFUNDA) ☢️{RESET}")
+    print("ANALISANDO ARQUIVOS, LOGS E REDE. AGUARDE...\n")
     
     provas = []
-    
-    # BUSCA POR ARQUIVOS (Agora usando ADB SHELL para entrar no Android do cara)
-    # Procuramos por nomes e extensões que xitado usa
-    termos = ["lua", "mod", "cheat", "xit", "rege", "v7a", "inject", "proxy", "mdm", "bypass", "aim", "bot"]
-    pastas = ["/sdcard", "/storage/emulated/0/Android/data", "/storage/emulated/0/Android/obb"]
+    # Termos pesados para buscar tudo (incluindo MDM e Proxy do print)
+    termos = ["lua", "h4x", "mod", "cheat", "xit", "rege", "v7a", "inject", "proxy", "mdm", "plist", "tracev3"]
+    pastas = ["/sdcard/Android/data", "/sdcard/Android/obb", "/sdcard/Download", "/data/local/tmp"]
 
-    for p in pastas:
-        print(f"{CINZA}[🔍] Entrando em: {p}...{RESET}")
+    for pasta in pastas:
+        print(f"{CINZA}[🔍] Periciando: {pasta}...{RESET}")
         for t in termos:
-            # O comando 'adb shell find' é o segredo. Ele vasculha o celular do outro.
-            comando = f"adb shell find {p} -iname '*{t}*' 2>/dev/null"
-            resultado = os.popen(comando).read().strip()
-            
+            # O SEGREDO: adb shell find busca DENTRO do celular do cara
+            cmd = f"adb shell find {pasta} -iname '*{t}*' 2>/dev/null"
+            resultado = os.popen(cmd).read().strip()
             if resultado:
-                # Se achou algo, a gente quebra em linhas e adiciona às provas
                 for linha in resultado.split('\n'):
                     if linha:
-                        print(f"{AMARELO}⚠ DETECTADO: {linha[-60:]}{RESET}")
+                        print(f"{AMARELO}⚠ ACHADO: {linha[-50:]}{RESET}")
                         provas.append(linha)
-        # Pausa para o processamento não ser instantâneo e falso
-        time.sleep(3)
+        # FORÇA A LENTIDÃO: Isso evita o erro de 1 segundo
+        time.sleep(4)
 
-    # BUSCA POR PROXY ATIVO (Igual ao seu print de W.O.)
-    print(f"\n{CINZA}[🌐] Verificando túneis de rede (Proxy/VPN)...{RESET}")
+    # BUSCA DE PROXY (DUMPSYS)
+    print(f"\n{CINZA}[🌐] Analisando túneis de IP e MDM...{RESET}")
     proxy = os.popen("adb shell dumpsys connectivity | grep -E 'Proxy|mHttpProxy'").read().strip()
     if proxy:
-        provas.append(f"PROXY ATIVO: {proxy}")
+        provas.append(f"Proxy Detectado: {proxy}")
 
     logo()
-    print(f"{BRANCO}RELATÓRIO FINAL DE PERÍCIA{RESET}")
+    print(f"{BRANCO}LAUDO PERICIAL FINALIZADO{RESET}")
     print(f"{CINZA}──────────────────────────────────────{RESET}")
     modelo = os.popen("adb shell getprop ro.product.model").read().strip()
     print(f" APARELHO : {modelo}")
     
     if provas:
         print(f"\n STATUS   : {VERMELHO_BG}   W.O. DETECTADO   {RESET}")
-        print(f"\n{BRANCO}PROVAS (Vejas os prints da busca):{RESET}")
-        print(f"Total de rastros: {len(provas)}")
+        print(f"\n{BRANCO}EVIDÊNCIAS (Pode subir o W.O.):{RESET}")
+        print(f"Foram encontrados {len(provas)} rastros suspeitos.")
     else:
         print(f"\n STATUS   : {VERDE_BG}      LIMPO       {RESET}")
-        print(f"\n{BRANCO}Nenhum rastro encontrado no dispositivo.{RESET}")
+        print(f"\n{BRANCO}Dispositivo verificado com sucesso.{RESET}")
 
     print(f"\n{CINZA}──────────────────────────────────────{RESET}")
     input("Pressione Enter para fechar...")
 
 def menu():
-    # Instalação rápida sem frescura
-    os.system("pkg install android-tools -y > /dev/null 2>&1")
     while True:
         logo()
         print(f"[ 1 ] {BRANCO}CONECTAR NO CELULAR (PASSO A PASSO){RESET}")
