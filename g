@@ -1,38 +1,42 @@
 #!/bin/bash
-# BLACK BOX V17.0 - REAL SYSTEM
-# DATA: 10/05/2026 | DONO: ALUIZIO
+# BLACK BOX V17.0 - OFFICIAL WI-FI SYSTEM
+# DONO: ALUIZIO | DATA: 10/05/2026
 
 C='\033[1;36m' ; G='\033[1;32m' ; R='\033[1;31m' ; Y='\033[1;33m' ; W='\033[1;37m' ; N='\033[0m'
 
 menu_conexao() {
     clear
-    echo -e "${C}      ● BLACK BOX V17.0 - WI-FI CONNECT ●${N}"
-    echo -e "      ${C}DONO: ALUIZIO | STATUS: OFFLINE${N}"
+    echo -e "${C}      ● BLACK BOX V17.0 - PAREAMENTO WI-FI ●${N}"
+    echo -e "      STATUS: ${R}🔴 AGUARDANDO CONEXÃO${N}"
     echo -e "${W}──────────────────────────────────────${N}"
     
-    # [PASSO 1] - PAREAMENTO REAL (Onde a maioria erra)
-    echo -e "${Y}[!] PASSO 1: PAREAMENTO${N}"
-    read -p "IP DO ALVO: " ip
-    read -p "PORTA DO PAREAMENTO: " porta_p
-    read -p "CÓDIGO DE 6 DÍGITOS: " codigo
+    # [PASSO 1] PAREAMENTO OBRIGATÓRIO
+    echo -e "${Y}[1] CONFIGURAÇÃO DE PAREAMENTO${N}"
+    echo -e "${W}Vá em: Opções do Desenv. > Depuração por Wi-Fi > Parear com código${N}"
+    echo -e "${W}──────────────────────────────────────${N}"
+    read -p "DIGITE O IP DO JOGADOR: " ip
+    read -p "PORTA DO PAREAMENTO: " p_pair
+    read -p "CÓDIGO DE PAREAMENTO (6 DÍGITOS): " code
     
-    echo -e "${G}Tentando parear...${N}"
-    adb pair $ip:$porta_p $codigo
+    echo -e "\n${G}[🔗] TENTANDO PAREAR...${N}"
+    adb pair $ip:$p_pair $code
     
-    # [PASSO 2] - CONEXÃO REAL
-    echo -e "\n${Y}[!] PASSO 2: CONEXÃO FINAL${N}"
-    read -p "PORTA DA DEPURAÇÃO: " porta_d
-    adb connect $ip:$porta_d
+    echo -e "\n${Y}[2] CONEXÃO FINAL${N}"
+    echo -e "${W}Agora use a porta que aparece na tela anterior (a principal)${N}"
+    read -p "PORTA DA DEPURAÇÃO (PRINCIPAL): " p_conn
+    
+    echo -e "${G}[🚀] CONECTANDO AO DISPOSITIVO...${N}"
+    adb connect $ip:$p_conn
     
     sleep 2
     check=$(adb devices | grep -w "device")
     if [ ! -z "$check" ]; then
-        echo -e "${G}CONECTADO COM SUCESSO!${N}"
+        echo -e "${G}✅ DISPOSITIVO VINCULADO COM SUCESSO!${N}"
         sleep 1
         menu_pericia
     else
-        echo -e "${R}FALHA NA CONEXÃO. VERIFIQUE O WI-FI!${N}"
-        read -p "Pressione Enter para tentar de novo..."
+        echo -e "${R}❌ FALHA AO PAREAR. REINICIANDO...${N}"
+        sleep 2
         menu_conexao
     fi
 }
@@ -43,36 +47,31 @@ menu_pericia() {
     echo -e "      STATUS: ${G}🟢 ONLINE${N} | ${C}DONO: ALUIZIO${N}"
     echo -e "${W}──────────────────────────────────────${N}"
     echo -e "[ ${G}1${N} ] INICIAR BUSCA REAL (MAIS DE 100 RASTROS)"
-    echo -e "[ ${R}S${N} ] DESCONECTAR E SAIR"
+    echo -e "[ ${R}S${N} ] SAIR E DESCONECTAR"
     read -p "SISTEMA > " opc
 
     if [ "$opc" == "1" ]; then
         clear
-        echo -e "${C}      ● BLACK BOX V16.0 - VARREDURA PROFUNDA ●${N}"
+        echo -e "${C}      ● ANALISANDO TODOS OS ARQUIVOS... ●${N}"
         echo -e "${W}──────────────────────────────────────${N}"
         
-        # LISTA DE RASTROS QUE VOCÊ MANDOU (REAL)
+        # LISTA DE RASTROS REAIS (2026)
         termos="headtrick|drip|bypass|spider|xit|chit|h4x|mod|lua|rege|macro|iphone|pack|auxilio|aim|bot|proxy|plist|tracev3"
 
-        echo -e "${Y}🔍 PROCURANDO RASTROS EM TODO O CELULAR...${N}"
-        echo -e "${W}(Isso pode demorar, o sistema está lendo as pastas)${N}"
-        
-        # O comando 'find' busca os arquivos de verdade. Se não achar, a variável fica vazia.
+        echo -e "${Y}🔍 VARRENDO MEMÓRIA INTERNA...${N}"
+        # Busca real: Varre o sdcard inteiro atrás da lista de xits
         resultado=$(adb shell "find /sdcard -regextype posix-extended -iregex '.*($termos).*' 2>/dev/null")
 
         if [ ! -z "$resultado" ]; then
             echo -e "\n${R}⚠️  SUSPEITO DETECTADO! ⚠️${N}"
-            echo -e "${W}ARQUIVOS REAIS ENCONTRADOS NO DISPOSITIVO:${N}"
+            echo -e "${W}ARQUIVOS ENCONTRADOS:${N}"
             echo -e "${W}──────────────────────────────────────${N}"
-            # Mostra o rastro com o nome do arquivo original
             echo "$resultado" | sed "s|^|${R}> ${N}${W}|"
         else
-            echo -e "\n${G}✅ JOGADOR LIMPO!${N}"
-            echo -e "${W}Nenhum rastro de auxílio encontrado.${N}"
+            echo -e "\n${G}✅ NADA ENCONTRADO. JOGADOR LIMPO!${N}"
         fi
-        
         echo -e "${W}──────────────────────────────────────${N}"
-        read -p "APERTE ENTER PARA VOLTAR..."
+        read -p "ENTER PARA VOLTAR..."
         menu_pericia
     elif [[ "$opc" == "s" || "$opc" == "S" ]]; then
         adb disconnect
