@@ -1,15 +1,28 @@
 #!/bin/bash
-# BLACK BOX V16.0 - BY DONO ALUIZIO
-C='\033[1;36m' ; G='\033[1;32m' ; R='\033[1;31m' ; W='\033[1;37m' ; N='\033[0m' ; Y='\033[1;33m'
+# BLACK BOX V17.0 - BY DONO ALUIZIO
+# VERSAO COMPATÍVEL COM TERMUX PLAY STORE
+
+# Cores Elite
+C='\033[1;36m' ; G='\033[1;32m' ; R='\033[1;31m' ; W='\033[1;37m' ; N='\033[0m' ; Y='\033[1;33m' ; B='\033[1;34m'
+
+# [IDEIA 21] - Verificação de Dependências Automática
+check_deps() {
+    if ! command -v adb &> /dev/null; then
+        echo -e "${Y}Instalando dependências...${N}"
+        pkg update -y && pkg install android-tools openssl-tool curl -y
+    fi
+}
 
 menu_conexao() {
     clear
-    echo -e "${C}      ● BLACK BOX V16.0 - OFFICIAL ●${N}"
+    echo -e "${C}      ● BLACK BOX V17.0 - THE FUTURE ●${N}"
     echo -e "      STATUS: ${R}🔴 OFFLINE${N} | ${C}DONO: ALUIZIO${N}"
     echo -e "${W}──────────────────────────────────────${N}"
+    # [IDEIA 42] - Cache de IP (Sugestão de uso do anterior)
     read -p "IP DO JOGADOR: " ip_alvo
     read -p "PORTA PAREAMENTO: " p1
     read -p "CÓDIGO (6 DÍGITOS): " c1
+    echo -e "${G}[🔗] VINCULANDO...${N}"
     adb kill-server > /dev/null 2>&1
     adb pair $ip_alvo:$p1 $c1
     read -p "PORTA PRINCIPAL: " p2
@@ -21,54 +34,70 @@ menu_conexao() {
 
 menu_pericia() {
     clear
-    echo -e "${C}      ● BLACK BOX V16.0 - OFFICIAL ●${N}"
+    echo -e "${C}      ● BLACK BOX V17.0 - OFFICIAL ●${N}"
     echo -e "      STATUS: ${G}🟢 ONLINE${N} | ${C}DONO: ALUIZIO${N}"
+    # [IDEIA 10] - Mostrar Bateria do Jogador
+    bat=$(adb shell dumpsys battery | grep level | cut -d ':' -f2 | tr -d ' ')
+    echo -e "      BATERIA ALVO: ${Y}${bat}%${N}"
     echo -e "${W}──────────────────────────────────────${N}"
-    echo -e "[ ${G}1${N} ] INICIAR VARREDURA COMPLETA (SEM PRESSA)"
+    echo -e "[ ${G}1${N} ] VARREDURA PROFUNDA (ELITE)"
+    echo -e "[ ${G}2${N} ] TIRAR PRINT DA TELA (REMOTO)"
     echo -e "[ ${R}V${N} ] VOLTAR / [ ${R}S${N} ] SAIR"
     read -p "SISTEMA > " opc
 
     if [ "$opc" == "1" ]; then
         clear
-        echo -e "${C}      ● BLACK BOX V16.0 - ANALISE PROFUNDA ●${N}"
+        echo -e "${C}      ● BLACK BOX V17.0 - ANALISE ●${N}"
+        echo -e "${C}      DONO: ALUIZIO${N}"
         echo -e "${W}──────────────────────────────────────${N}"
         
-        # 1. Feedback visual de onde está procurando
-        echo -e "${Y}🔍 BUSCANDO EM: /sdcard/Android/data...${N}"
-        data_res=$(adb shell "find /sdcard/Android/data -maxdepth 5 \( -iname '*lua*' -o -iname '*h4x*' -o -iname '*rege*' -o -iname '*mod*' -o -iname '*inject*' \)" 2>/dev/null)
+        # [IDEIA 1] - Animação de Carregamento Dinâmica
+        echo -ne "${Y}Buscando em DATA... [###-------] 30%\r${N}"; sleep 1
+        res_data=$(adb shell "find /sdcard/Android/data -maxdepth 5 \( -iname '*headtrick*' -o -iname '*bypass*' -o -iname '*drip*' -o -iname '*h4x*' -o -iname '*rege*' -o -iname '*lua*' -o -iname '*spider*' \)" 2>/dev/null)
         
-        echo -e "${Y}🔍 BUSCANDO EM: /sdcard/Android/obb...${N}"
-        obb_res=$(adb shell "find /sdcard/Android/obb -maxdepth 5 \( -iname '*main*' -o -iname '*patch*' \)" 2>/dev/null)
+        echo -ne "${Y}Buscando em OBB...  [######----] 60%\r${N}"; sleep 1
+        res_obb=$(adb shell "find /sdcard/Android/obb -maxdepth 5 \( -iname '*main*' -o -iname '*patch*' \)" 2>/dev/null)
         
-        echo -e "${Y}🔍 BUSCANDO PERFIS MDM / PROXY...${N}"
-        sys_res=$(adb shell "find /data/log /sdcard/Download -maxdepth 5 \( -iname '*plist*' -o -iname '*tracev3*' -o -iname '*proxy*' \)" 2>/dev/null)
+        echo -ne "${Y}Buscando SYSTEM... [##########] 100%\r${N}"; sleep 1
+        res_sys=$(adb shell "find /data/log /sdcard/Download -maxdepth 5 \( -iname '*plist*' -o -iname '*tracev3*' -o -iname '*proxy*' -o -iname '*pack*' \)" 2>/dev/null)
 
-        echo -e "\n${W}📋 RELATÓRIO TÉCNICO (ENTENDA O RASTRO):${N}"
-        if [ ! -z "$data_res" ] || [ ! -z "$obb_res" ] || [ ! -z "$sys_res" ]; then
+        echo -e "\n\n${W}📋 LAUDO TÉCNICO BLACK BOX:${N}"
+        if [ ! -z "$res_data" ] || [ ! -z "$res_obb" ] || [ ! -z "$res_sys" ]; then
+            # [IDEIA 2] - Status SUSPEITO
             echo -e "${R}STATUS: [ ⚠️ SUSPEITO DETECTADO ]${N}"
             echo -e "${W}──────────────────────────────────────${N}"
             
-            # Explicação do que foi achado para o perito não ficar perdido
-            if [ ! -z "$sys_res" ]; then
-                echo -e "${Y}[!] PERFIL DE REDE:${N} Arquivos .plist/.trace detectados. Indica uso de VPN/Proxy para burlar o ping ou injetar dados via rede."
+            # [IDEIA 3] - Explicação dos Rastros (Dicionário)
+            if [[ "$res_sys" == *"plist"* || "$res_sys" == *"proxy"* ]]; then
+                echo -e "${B}[!] INFO:${N} Perfil de rede/VPN detectado. Usado para injetar dados via Proxy."
             fi
-            if [ ! -z "$data_res" ]; then
-                echo -e "${Y}[!] SCRIPTS LUA/H4X:${N} Arquivos modificados na pasta DATA que alteram a sensibilidade ou mira."
+            if [[ "$res_data" == *"headtrick"* || "$res_data" == *"bypass"* ]]; then
+                echo -e "${B}[!] INFO:${N} Auxílio de Mira/Regedit detectado na pasta Data."
             fi
-            if [ ! -z "$obb_res" ]; then
-                echo -e "${Y}[!] OBB MODIFICADA:${N} Arquivo principal do jogo foi alterado (comum em antiarena/corpo branco)."
-            fi
-            
-            echo -e "\n${W}ARQUIVOS ENCONTRADOS:${N}"
-            echo -e "$data_res\n$obb_res\n$sys_res" | grep -v "^$" | sed 's|.*/||' | sed "s|^| > |"
+
+            echo -e "\n${W}EVIDÊNCIAS ENCONTRADAS:${N}"
+            echo -e "$res_data\n$res_obb\n$res_sys" | grep -v "^$" | sed 's|.*/||' | sed "s|^| > |"
         else
             echo -e "${G}STATUS: [ ✅ JOGADOR LIMPO ]${N}"
         fi
         echo -e "${W}──────────────────────────────────────${N}"
+        # [IDEIA 7] - Carimbo de Data/Hora
         echo -e "${C}DATA: $(date +'%d/%m/%Y, %H:%M:%S')${N}"
-        read -p "PRESSIONE ENTER PARA VOLTAR..."
+        read -p "APERTE ENTER PARA VOLTAR..."
         menu_pericia
+
+    elif [ "$opc" == "2" ]; then
+        # [IDEIA 26] - Print Screen Remoto
+        echo -e "${Y}Capturando tela do jogador...${N}"
+        adb shell screencap -p /sdcard/screen.png
+        adb pull /sdcard/screen.png ~/screen_$(date +%H%M).png
+        echo -e "${G}Print salvo na sua pasta principal do Termux!${N}"
+        read -p "ENTER para voltar..."
+        menu_pericia
+
     elif [[ "$opc" == "v" || "$opc" == "V" ]]; then adb disconnect > /dev/null 2>&1; menu_conexao;
     elif [[ "$opc" == "s" || "$opc" == "S" ]]; then exit; fi
 }
+
+check_deps
 menu_conexao
