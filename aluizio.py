@@ -1,13 +1,14 @@
 import os, time, subprocess
 
-# Cores
-R, G, W, B, D, N = '\033[1;31m', '\033[1;32m', '\033[1;37m', '\033[1;34m', '\033[1;30m', '\033[0m'
+# Paleta de Cores
+R, G, W, B, D, Y, N = '\033[1;31m', '\033[1;32m', '\033[1;37m', '\033[1;34m', '\033[1;30m', '\033[1;33m', '\033[0m'
 
 def header():
     os.system('clear')
-    print(f"{R} ■ BLACK BOX SYSTEM v4.0 ■{N}")
+    print(f"{B} ■ SCREEN SHARE STR v1.0 ■{N}")
     print(f"{D}──────────────────────────────────────────{N}")
     try:
+        # Verifica se o ADB está ativo e dispositivos conectados
         check = subprocess.getoutput("adb devices")
         if "device\n" in check:
             print(f" STATUS: {G}DISPOSITIVO CONECTADO{N}")
@@ -15,76 +16,94 @@ def header():
             print(f" STATUS: {R}AGUARDANDO CONEXÃO...{N}")
     except:
         print(f" STATUS: {R}ERRO NO MOTOR ADB{N}")
+    print(f" {W}DEV: {B}ALUIZIO {N}| {W}SISTEMA: {B}UNIVERSAL{N}")
     print(f"{D}──────────────────────────────────────────{N}")
 
-def barra_progresso(tarefa):
-    print(f"\n{W}[+]{N} {tarefa}")
+def barra_progresso(tempo):
     for i in range(0, 101, 2):
         print(f" {B}[{N}{'#' * (i // 5)}{' ' * (20 - (i // 5))}{B}]{N} {i}%", end="\r")
-        time.sleep(0.03)
-    print(f"\n{G}[!] {tarefa} CONCLUÍDO.{N}\n")
+        time.sleep(tempo)
+    print("\n")
 
-def scan_deep():
+def scan_pericia():
     header()
-    barra_progresso("ESCANEANDO MEMÓRIA E LOGS")
+    print(f"{W}[+]{N} INICIANDO VARREDURA ESTRUTURAL...")
+    barra_progresso(0.04)
     
-    # Dicionário explicativo de rastros reais
+    # Banco de dados de rastros reais que você passou
     rastros = {
-        "headtrick": "Mod de auxílio de mira (Aimbot/HS)",
-        "drip": "Injetor de funções VIP (Drip Client)",
-        "spider": "Menu de trapaça atravessa parede/voar",
-        "h4x": "Abreviatura comum para hacks/trapaças",
-        "regedit": "Modificação de registro para sensibilidade apelona",
-        "bypass": "Script para burlar o Anti-Cheat do jogo",
-        "aimlock": "Trava de mira automática no inimigo",
-        "lua": "Script de execução externa (Executor Script)",
-        "config.xml": "Pode conter modificações de textura ou antena",
-        "mdm_bypass": "Perfil para esconder apps instalados",
-        "proxy.config": "Usado para desviar tráfego e esconder o IP"
+        "headtrick": "Aimbot/HS - Modificação de mira",
+        "drip": "Drip Client - Injetor de funções VIP",
+        "spider": "SpiderV7 - Travessia de paredes",
+        "ghost": "Ghost Mod - Invisibilidade",
+        "bypass": "Bypass - Burlar Anti-Cheat",
+        "regedit": "Regedit VIP - Ajuste de sensibilidade",
+        "aimlock": "Trava de Mira - Fixação automática",
+        "lua": "Script Externo - Executor .lua",
+        "shuhari": "Shuhari Injector - Modificação de arquivos",
+        "zeus": "Odin/Zeus - Painel de controle",
+        "mdm_bypass": "Perfil Oculto - Ocultação de apps",
+        "proxy.config": "Proxy/VPN - Desvio de tráfego"
     }
     
-    pastas = ["/sdcard/Download", "/sdcard/Android/data", "/sdcard/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp\ Documents"]
+    pastas = [
+        "/sdcard/Download", 
+        "/sdcard/Android/data", 
+        "/sdcard/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp\ Documents",
+        "/sdcard/Telegram/Telegram\ Documents",
+        "/sdcard/Android/obb"
+    ]
+    
     achados = []
 
-    print(f"{D}Pesquisando por evidências...{N}")
-    for termo, motivo in rastros.items():
+    print(f"{D}Analisando logs e diretórios...{N}")
+    for rastro, info in rastros.items():
+        print(f" {W}Buscando:{N} {D}{rastro}{N}", end="\r")
         for pasta in pastas:
-            cmd = f"adb shell find {pasta} -name '*{termo}*' 2>/dev/null"
+            # Comando find para busca real via ADB
+            cmd = f"adb shell find {pasta} -name '*{rastro}*' 2>/dev/null"
             res = subprocess.getoutput(cmd)
-            if res:
-                achados.append(f"{R}ALERTA:{N} {W}{termo}{N}\n{D}LOCAL:{N} {res.splitlines()[0]}\n{Y}MOTIVO:{N} {motivo}\n")
+            if res and "/" in res:
+                for line in res.splitlines():
+                    if line.strip() and not "denied" in line:
+                        achados.append(f"{R}ALERTA:{N} {W}{rastro}{N}\n{D}LOCAL:{N} {line}\n{Y}MOTIVO:{N} {info}")
 
+    header()
     if not achados:
-        print(f"\n{G}✅ NENHUM RASTRO REAL ENCONTRADO NO DISPOSITIVO.{N}")
+        print(f"{G}✅ RESULTADO: DISPOSITIVO LIMPO.{N}")
     else:
-        print(f"\n{R}🚨 RELATÓRIO DE PERÍCIA:{N}\n")
+        print(f"{R}🚨 EVIDÊNCIAS ENCONTRADAS:{N}")
+        print(f"{D}──────────────────────────────────────────{N}")
         for item in achados:
             print(item)
             print(f"{D}---{N}")
+        print(f"{B}TOTAL:{N} {len(achados)} rastros.")
     
-    input(f"\n{W}Pressione ENTER para voltar ao menu...{N}")
+    input(f"\n{W}Pressione ENTER para sair...{N}")
 
 while True:
     header()
-    print(f" [{R}01{N}] {W}PAREAR (CÓDIGO WIRELESS){N}")
-    print(f" [{R}02{N}] {W}CONECTAR (IP:PORTA){N}")
-    print(f" [{R}03{N}] {W}DEEP SCAN (LOGS + MEMÓRIA){N}")
-    print(f" [{R}04{N}] {W}DESCONECTAR E RESETAR{N}")
-    print(f" [{R}00{N}] {W}SAIR{N}")
+    print(f" [{B}01{N}] {W}PAREAR (CODE WIRELESS){N}")
+    print(f" [{B}02{N}] {W}CONECTAR (IP:PORTA){N}")
+    print(f" [{B}03{N}] {W}DEEP SCAN (PERÍCIA){N}")
+    print(f" [{B}04{N}] {W}LIMPAR ADB / RESET{N}")
+    print(f" [{B}00{N}] {W}SAIR{N}")
     print(f"{D}──────────────────────────────────────────{N}")
     
-    op = input(f" {R}BLACK_BOX > {N}")
+    op = input(f" {B}STR > {N}")
 
     if op == '1':
         ip = input(f"\n IP:Porta: "); code = input(f" Código: ")
-        os.system(f"adb pair {ip} {code}"); input("\nENTER...")
+        os.system(f"adb pair {ip} {code}")
+        input("\nClique Enter...")
     elif op == '2':
         ip = input(f"\n IP:Porta: ")
-        os.system(f"adb connect {ip}"); input("\nENTER...")
+        os.system(f"adb connect {ip}")
+        input("\nClique Enter...")
     elif op == '3':
-        scan_deep()
+        scan_pericia()
     elif op == '4':
         os.system("adb disconnect && adb kill-server && adb start-server")
-        print(f"\n{G}Sistema Resetado.{N}"); time.sleep(2)
+        print(f"\n{G}Reset concluído.{N}"); time.sleep(1)
     elif op == '0':
         break
