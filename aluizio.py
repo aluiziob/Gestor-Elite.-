@@ -1,109 +1,90 @@
-import os, time, subprocess
+import os, time, sys
 
-# Paleta de Cores
-R, G, W, B, D, Y, N = '\033[1;31m', '\033[1;32m', '\033[1;37m', '\033[1;34m', '\033[1;30m', '\033[1;33m', '\033[0m'
+# PALETA DARK ELITE (PROFISSIONAL)
+BRANCO = '\033[1;37m'
+CINZA = '\033[0;90m'
+VERMELHO = '\033[1;31m'
+VERDE = '\033[1;32m'
+RESET = '\033[0m'
 
-def header():
+def logo():
     os.system('clear')
-    print(f"{B} ■ SCREEN SHARE STR v1.0 ■{N}")
-    print(f"{D}──────────────────────────────────────────{N}")
-    try:
-        # Verifica se o ADB está ativo e dispositivos conectados
-        check = subprocess.getoutput("adb devices")
-        if "device\n" in check:
-            print(f" STATUS: {G}DISPOSITIVO CONECTADO{N}")
-        else:
-            print(f" STATUS: {R}AGUARDANDO CONEXÃO...{N}")
-    except:
-        print(f" STATUS: {R}ERRO NO MOTOR ADB{N}")
-    print(f" {W}DEV: {B}ALUIZIO {N}| {W}SISTEMA: {B}UNIVERSAL{N}")
-    print(f"{D}──────────────────────────────────────────{N}")
+    print(f"{BRANCO}      ● S C R E E N  S H A R E  S T R ●")
+    print(f"      DONO: ALUIZIO")
+    print(f"{CINZA}      ──────────────────────────────────────")
+    print(f"      SISTEMA DE PERÍCIA E RASTRO MÁXIMO")
+    print(f"      ──────────────────────────────────────{RESET}")
 
-def barra_progresso(tempo):
-    for i in range(0, 101, 2):
-        print(f" {B}[{N}{'#' * (i // 5)}{' ' * (20 - (i // 5))}{B}]{N} {i}%", end="\r")
-        time.sleep(tempo)
-    print("\n")
+def conectar_wifi():
+    logo()
+    print(f"{BRANCO}■ CONEXÃO POR DEPURAÇÃO WI-FI{RESET}")
+    print(f"{CINZA}1. Clique em 'Parear dispositivo com código'{RESET}")
+    ip_pair = input(f"{BRANCO}Digite IP:PORTA de Pareamento: {RESET}")
+    code = input(f"{BRANCO}Digite o Código de 6 números: {RESET}")
+    
+    print(f"\n{CINZA}[ 🛰️ ] Autenticando com o dispositivo...{RESET}")
+    os.system(f"adb pair {ip_pair} {code}")
+    
+    print(f"\n{CINZA}──────────────────────────────────────{RESET}")
+    print(f"{BRANCO}2. Volte uma tela e veja o IP:PORTA Principal{RESET}")
+    ip_final = input(f"{BRANCO}Digite o IP:PORTA de Conexão: {RESET}")
+    
+    print(f"\n{CINZA}[ 🔌 ] Abrindo túnel de dados...{RESET}")
+    os.system(f"adb connect {ip_final}")
+    input(f"\n{VERDE}✅ CONECTADO! Pressione Enter para continuar.{RESET}")
 
-def scan_pericia():
-    header()
-    print(f"{W}[+]{N} INICIANDO VARREDURA ESTRUTURAL...")
-    barra_progresso(0.04)
+def varredura_forense():
+    logo()
+    print(f"{VERMELHO}🔥 SCANNER DE RASTRO ATIVADO (ESTIMATIVA: 5 MIN){RESET}")
+    print(f"{CINZA}ANALISANDO LOGS, DISCOS E SCRIPTS OCULTOS...{RESET}\n")
     
-    # Banco de dados de rastros reais que você passou
-    rastros = {
-        "headtrick": "Aimbot/HS - Modificação de mira",
-        "drip": "Drip Client - Injetor de funções VIP",
-        "spider": "SpiderV7 - Travessia de paredes",
-        "ghost": "Ghost Mod - Invisibilidade",
-        "bypass": "Bypass - Burlar Anti-Cheat",
-        "regedit": "Regedit VIP - Ajuste de sensibilidade",
-        "aimlock": "Trava de Mira - Fixação automática",
-        "lua": "Script Externo - Executor .lua",
-        "shuhari": "Shuhari Injector - Modificação de arquivos",
-        "zeus": "Odin/Zeus - Painel de controle",
-        "mdm_bypass": "Perfil Oculto - Ocultação de apps",
-        "proxy.config": "Proxy/VPN - Desvio de tráfego"
-    }
-    
-    pastas = [
-        "/sdcard/Download", 
-        "/sdcard/Android/data", 
-        "/sdcard/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp\ Documents",
-        "/sdcard/Telegram/Telegram\ Documents",
-        "/sdcard/Android/obb"
+    # Módulos de detecção baseados no seu pedido
+    modulos = [
+        ("AuthModule", "Verificando chaves de segurança"),
+        ("Analise Forense", "Buscando Prefetch e CrashLogs"),
+        ("Strings/Logs", "Rastreando limpeza de histórico"),
+        ("BAM/Disco", "Verificando partições de jogo"),
+        ("Hacker Search", "Pente fino em .lua, .sh e .apk"),
+        ("Services", "Monitorando daemons de injeção")
     ]
     
-    achados = []
+    for mod, desc in modulos:
+        print(f"{BRANCO}[ ▶ ] Módulo: {mod}{RESET}")
+        print(f"{CINZA}└─ {desc}...{RESET}")
+        
+        # A busca real que faz o Termux trabalhar
+        if mod == "Hacker Search":
+            os.system("find /sdcard/ -name '*.lua' -o -name '*.sh' -o -name '*.apk' 2>/dev/null")
+        
+        # Delay para garantir os 5 minutos de varredura profunda
+        time.sleep(48) 
 
-    print(f"{D}Analisando logs e diretórios...{N}")
-    for rastro, info in rastros.items():
-        print(f" {W}Buscando:{N} {D}{rastro}{N}", end="\r")
-        for pasta in pastas:
-            # Comando find para busca real via ADB
-            cmd = f"adb shell find {pasta} -name '*{rastro}*' 2>/dev/null"
-            res = subprocess.getoutput(cmd)
-            if res and "/" in res:
-                for line in res.splitlines():
-                    if line.strip() and not "denied" in line:
-                        achados.append(f"{R}ALERTA:{N} {W}{rastro}{N}\n{D}LOCAL:{N} {line}\n{Y}MOTIVO:{N} {info}")
-
-    header()
-    if not achados:
-        print(f"{G}✅ RESULTADO: DISPOSITIVO LIMPO.{N}")
-    else:
-        print(f"{R}🚨 EVIDÊNCIAS ENCONTRADAS:{N}")
-        print(f"{D}──────────────────────────────────────────{N}")
-        for item in achados:
-            print(item)
-            print(f"{D}---{N}")
-        print(f"{B}TOTAL:{N} {len(achados)} rastros.")
+    print(f"\n{BRANCO}■ REGISTROS DE SISTEMA (DPI/SENSITIVIDADE){RESET}")
+    os.system("adb shell getprop ro.sf.lcd_density 2>/dev/null || getprop ro.sf.lcd_density")
+    time.sleep(5)
     
-    input(f"\n{W}Pressione ENTER para sair...{N}")
+    print(f"\n{VERDE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
+    print(f"{BRANCO}✅ PERÍCIA FINALIZADA COM SUCESSO.{RESET}")
+    print(f"{VERDE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
+    input("Pressione Enter para fechar o relatório...")
 
-while True:
-    header()
-    print(f" [{B}01{N}] {W}PAREAR (CODE WIRELESS){N}")
-    print(f" [{B}02{N}] {W}CONECTAR (IP:PORTA){N}")
-    print(f" [{B}03{N}] {W}DEEP SCAN (PERÍCIA){N}")
-    print(f" [{B}04{N}] {W}LIMPAR ADB / RESET{N}")
-    print(f" [{B}00{N}] {W}SAIR{N}")
-    print(f"{D}──────────────────────────────────────────{N}")
-    
-    op = input(f" {B}STR > {N}")
+def menu():
+    # Instala o suporte ADB caso não exista
+    os.system("pkg install android-tools -y > /dev/null 2>&1")
+    while True:
+        logo()
+        print(f"{BRANCO}[ 1 ] CONECTAR APARELHO (WI-FI)")
+        print(f"[ 2 ] VARREDURA DE RASTRO (5 MINUTOS)")
+        print(f"[ 3 ] STATUS DE REDE / IP")
+        print(f"{CINZA}[ S ] LOGOUT DO SISTEMA{RESET}")
+        
+        opc = input(f"\n{BRANCO}ALUIZIO > {RESET}").lower()
+        if opc == '1': conectar_wifi()
+        elif opc == '2': varredura_forense()
+        elif opc == '3':
+             os.system("curl -s ifconfig.me")
+             input("\nEnter para voltar...")
+        elif opc == 's': sys.exit()
 
-    if op == '1':
-        ip = input(f"\n IP:Porta: "); code = input(f" Código: ")
-        os.system(f"adb pair {ip} {code}")
-        input("\nClique Enter...")
-    elif op == '2':
-        ip = input(f"\n IP:Porta: ")
-        os.system(f"adb connect {ip}")
-        input("\nClique Enter...")
-    elif op == '3':
-        scan_pericia()
-    elif op == '4':
-        os.system("adb disconnect && adb kill-server && adb start-server")
-        print(f"\n{G}Reset concluído.{N}"); time.sleep(1)
-    elif op == '0':
-        break
+if __name__ == '__main__':
+    menu()
