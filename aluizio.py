@@ -9,7 +9,7 @@ AMARELO = '\033[1;33m'
 CIANO = '\033[1;36m'
 RESET = '\033[0m'
 
-# BASE DE DADOS DE IDENTIFICAÇÃO (1º SCRIPT CONVERTIDO)
+# BASE DE DADOS DE IDENTIFICAÇÃO
 BLACK_LIST_HWID = {
     "CAACFD6C87A2F273": "03/04/26 - Root Detectado",
     "B41E8AB1CBC546D9": "03/04/26 - Root Detectado",
@@ -41,14 +41,13 @@ def logo():
     print(f"{BRANCO}  Screen Share Str — Fucking Cheaters{RESET}")
     print(f"  {CINZA}DONO: ALUIZIO | Versão Suprema{RESET}")
     print(f"{BRANCO}  " + "═"*40 + f"{RESET}")
-    print(f"   )       (     (          (")
-    print(f"   ( /(       )\ )  )\ )       )\ )")
-    print(f"   )\()) (   (()/( (()/(  (   (()/(")
-    print(f"  |((_)\  )\   /(_)) /(_)) )\   /(_))")
-    print(f"  |_ ((_)((_) (_))  (_))  ((_) (_))")
-    print(f"  | |/ / | __|| |   | |   | __|| _ \\")
-    print(f"  ' <  | _| | |__ | |__ | _| |   /")
-    print(f"  _|\_\\ |___||____||____||___||_|_\\")
+    # Arte ASCII corrigida para formar "STR" de forma limpa e agressiva
+    print(f"{CIANO}     ███████╗████████╗██████╗ ")
+    print(f"     ██╔════╝╚══██╔══╝██╔══██╗")
+    print(f"     ███████╗   ██║   ██████╔╝")
+    print(f"     ╚════██║   ██║   ██╔══██╗")
+    print(f"     ███████║   ██║   ██║  ██║")
+    print(f"     ╚══════╝   ╚═╝   ╚═╝  ╚═╝{RESET}")
     print(f"{BRANCO}  " + "═"*40 + f"{RESET}")
 
 def conectar_wifi():
@@ -68,14 +67,13 @@ def conectar_wifi():
     
     print(f"\n{CINZA}[ 🔌 ] Conectando ao dispositivo...{RESET}")
     os.system(f"adb connect {ip_final}")
-    input(f"\n{VERDE}✓ SUCESSO! Conectado à Black Box. Enter para voltar.{RESET}")
+    input(f"\n{VERDE}✓ SUCESSO! Conectado. Enter para voltar.{RESET}")
 
 def varredura_total():
     logo()
     print(f"{VERMELHO}🔥 INICIANDO PERÍCIA AUTOMÁTICA (5 MINUTOS){RESET}")
-    print(f"{CINZA}ANALISANDO ARQUIVOS, LOGS E DIRETÓRIOS DO SYSTEMA...{RESET}\n")
+    print(f"{CINZA}ANALISANDO ARQUIVOS, LOGS E DIRETÓRIOS DO SISTEMA...{RESET}\n")
     
-    # Detecções baseadas na lista do 3º script
     modulos = [
         ("Instalação FreeFire", "Buscando pacotes oficiais e caminhos modificados"),
         ("Reinicialização", "Avaliando Uptime do dispositivo (Bypass de tempo)"),
@@ -90,15 +88,13 @@ def varredura_total():
         print(f"{BRANCO}[ 🔍 ] Analisando Módulo: {mod}{RESET}")
         print(f"{CINZA}  └─ {desc}...{RESET}")
         
-        # Simulação de verificação forçada
         if mod == "Verificação Root":
             os.system("adb shell which su 2>/dev/null")
         elif mod == "Shaders & OBB":
             os.system("find /sdcard/Android/obb/ -name '*.obb' 2>/dev/null")
             
-        time.sleep(43) # Distribuição exata para completar os 5 minutos de rastro
+        time.sleep(43) # Completa os 5 minutos totais de varredura profunda
 
-    # Puxa o HWID (Serial) real do celular conectado
     print(f"\n{BRANCO}■ CONSULTANDO HWID NO BANCO DE DADOS...{RESET}")
     hwid_atual = os.popen("adb shell getprop ro.serialno 2>/dev/null || getprop ro.serialno").read().strip().upper()
     
@@ -135,3 +131,4 @@ def menu():
 
 if __name__ == '__main__':
     menu()
+
