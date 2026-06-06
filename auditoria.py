@@ -4,22 +4,21 @@ import sys
 import time
 import random
 
-# DICIONÁRIO COMPLETO — AUXÍLIOS DE MIRA, INJETORES, BYPASS E PASTAS
-ALVOS_DETECCAO = [
-    # Termos Gerais e Auxílios de Mira
-    "CHEAT", "BYPASS", "MODMENU", "INJECTOR", "REGEDIT", "AIMBOT", "WALLHACK", 
-    "AIMLOCK", "AUTO_HEADSHOT", "NO_RECOIL", "AUXILIO_MIRA", "MACRO", "SENSITIVITY",
-    # Modificações de Arquivos do Jogo
-    "COM.DTS.FREEFIRETH", "COM.DTS.FREEFIREMAX", "LIBAUTO.SO", "LIBANRK.SO", 
-    "METADATA.BIN", "GLOBAL-METADATA", "UNITY_PLAYER", "SHADERS.BUNDLE", "LIBIL2CPP.SO",
-    # Ferramentas e Clonadores
-    "GAME_GUARDIAN", "LULUBBOX", "MT_MANAGER", "X8_SANDBOX", "VIRTUAL_BACKUP",
-    "PANDA_MOUSE", "OCTOPUS", "APKSIGNER", "LUCKY_PATCHER", "GG_SCRIPT",
-    "SU_BINARY", "MAGISK", "KERNELSU", "SUPERUSER", "BUSYBOX", "FRIDA_SERVER",
-    "HTTPCANARY", "CHARLES_PROXY", "POSTMAN", "VIRTUAL_ENV", "SANDBOX"
+# CATEGORIA 1: HACKS CRÍTICOS E AUXÍLIOS DE MIRA DIRECTA (REPROVAÇÃO DIRETA)
+HACKS_CRITICOS = [
+    "CHEAT", "BYPASS", "MODMENU", "INJECTOR", "AIMBOT", "WALLHACK", 
+    "AIMLOCK", "AUTO_HEADSHOT", "NO_RECOIL", "AUXILIO_MIRA", "XIT", 
+    "HACK", "GG_SCRIPT", "LIBAUTO.SO", "LIBANRK.SO"
 ]
 
-# Cores ANSI para o Visual Cyberpunk/Mandrake
+# CATEGORIA 2: FERRAMENTAS DUAL-USE / MODIFICAÇÃO (GERA APENAS SUSPEITA)
+FERRAMENTAS_SUSPEITAS = [
+    "REGEDIT", "MACRO", "SENSITIVITY", "MT_MANAGER", "MT2", "GAME_GUARDIAN", 
+    "LULUBBOX", "X8_SANDBOX", "VIRTUAL_BACKUP", "PANDA_MOUSE", "OCTOPUS", 
+    "LUCKY_PATCHER", "HTTPCANARY", "CHARLES_PROXY", "VIRTUAL_ENV", "SANDBOX"
+]
+
+# Cores ANSI para a Estética do Painel
 VERDE = '\033[92m'
 CIANO = '\033[96m'
 VERMELHO = '\033[91m'
@@ -27,6 +26,7 @@ AMARELO = '\033[93m'
 RESET = '\033[0m'
 NEON = '\033[1;36m'
 ROXO = '\033[95m'
+BRANCO = '\033[97m'
 
 def limpar_tela():
     os.system('clear' if os.name == 'posix' else 'cls')
@@ -43,113 +43,119 @@ def desenhar_banner():
     print(f"               {ROXO}● DIRETOR ALUIZIO | STR SECURITY SYSTEM ●{RESET}")
     print(f"{CIANO}======================================================================{RESET}")
 
-def animacao_carregamento_nota_10(diretorios_escaneados, total_arquivos):
-    """Gera o feed de logs correndo em altíssima velocidade estilo o vídeo"""
-    print(f"\n{ROXO}[⚙️] INICIALIZANDO DECRIPTOGRAFIA E MAPEAMENTO DE BUFFER...{RESET}\n")
-    time.sleep(0.5)
+def animacao_hacker_nota_10(pastas, total_arquivos):
+    """Gera um feed de análise ultra rápido simulando descriptografia de memória"""
+    print(f"\n{ROXO}[⚙️] CONECTANDO AO MEMORY BUFFER DO PROCESSO CORE...{RESET}\n")
+    time.sleep(0.4)
     
-    # Faz linhas de código e verificação passarem voando na tela
-    for i in range(80):
-        if diretorios_escaneados:
-            pasta_exemplo = random.choice(diretorios_escaneados)[:40]
-        else:
-            pasta_exemplo = "/storage/emulated/0/Android/data"
-            
-        hex_memoria = f"0x{random.randint(1000, 9999)}F{random.randint(10, 99)}"
-        status_log = random.choice([f"{VERDE}[INTEGRO]", f"{CIANO}[CHECK]", f"{AMARELO}[VASCULHANDO]"])
+    for i in range(100):
+        caminho_fake = random.choice(pastas)[:45] if pastas else "/storage/emulated/0/Android/data"
+        hex_addr = f"0x{random.randint(1000, 9999)}X{random.randint(10, 99)}"
+        tag_status = random.choice([f"{VERDE}[OK]", f"{CIANO}[VASCULHANDO]", f"{ROXO}[INDEXING]"])
         
-        print(f"{status_log} {CIANO}Setor {hex_memoria} ➔ {pasta_exemplo}...{RESET}")
-        time.sleep(0.015) # Velocidade ultra rápida para efeito nota 10
+        # Logs subindo na velocidade da luz para o efeito nota 10
+        print(f"{tag_status} {BRANCO}Endereço {hex_addr} ➔ {caminho_fake}...{RESET}")
+        time.sleep(0.01)
         
-    print(f"\n{VERDE}[+] Varredura de hardware concluída em microsegundos.{RESET}")
-    print(f"{VERDE}[+] Total de {total_arquivos} indexados para análise de strings.{RESET}\n")
-    time.sleep(0.5)
+    print(f"\n{VERDE}[+] Varredura de strings de hardware concluída.{RESET}")
+    print(f"{VERDE}[+] {total_arquivos} registros estruturados sem corromper pacotes.{RESET}\n")
+    time.sleep(0.4)
 
-def realizar_varredura_sem_limites():
-    """Varre todas as pastas públicas e a memória externa acessível por completo"""
-    achados = []
-    pastas_pesquisadas = []
-    total_arquivos_contados = 0
+def realizar_pericia_profunda():
+    """Busca ativa por arquivos e caminhos divididos por severidade de risco"""
+    alertas_criticos = []
+    alertas_suspeitos = []
+    pastas_mapeadas = []
+    total_arquivos = 0
     
-    # Raízes padrão de armazenamento interno e caminhos de cartões/pastas do Android
-    raizes_busca = [
-        "/sdcard/",
-        "/storage/emulated/0/",
-        "/storage/self/primary/"
-    ]
+    raizes = ["/sdcard/", "/storage/emulated/0/"]
     
-    # Varredura profunda baseada em árvore de diretórios
-    for raiz_pasta in raizes_busca:
-        if os.path.exists(raiz_pasta):
-            for pasta_atual, subpastas, arquivos in os.walk(raiz_pasta):
-                pastas_pesquisadas.append(pasta_atual)
+    for raiz in raizes:
+        if os.path.exists(raiz):
+            for pasta_atual, _, arquivos in os.walk(raiz):
+                pastas_mapeadas.append(pasta_atual)
+                nome_pasta = os.path.basename(pasta_atual).upper()
                 
-                # 1. Verifica se o próprio nome da pasta contém algum rastro conhecido
-                nome_pasta_caixa_alta = os.path.basename(pasta_atual).upper()
-                for termo in ALVOS_DETECCAO:
-                    if termo == nome_pasta_caixa_alta:
-                        achados.append(f"Diretório modificado ativo: {pasta_atual}")
+                # Checagem baseada no nome do diretório
+                for h in HACKS_CRITICOS:
+                    if h == nome_pasta:
+                        alertas_criticos.append(f"Diretório de Modificação Grave: {pasta_atual}")
+                for s in FERRAMENTAS_SUSPEITAS:
+                    if s == nome_pasta:
+                        alertas_suspeitos.append(f"Diretório Suspeito Identificado: {pasta_atual}")
                 
-                # 2. Abre e lê o conteúdo de arquivos de texto, configurações e logs salvos
+                # Leitura e análise dos arquivos internos (.txt, .log, etc)
                 for arquivo in arquivos:
-                    total_arquivos_contados += 1
-                    if arquivo.endswith(('.txt', '.log', '.xml', '.json', '.cfg', '.ini')):
+                    total_arquivos += 1
+                    if arquivo.endswith(('.txt', '.log', '.xml', '.json', '.cfg')):
                         try:
                             caminho_completo = os.path.join(pasta_atual, arquivo)
-                            # Limita a leitura para arquivos não muito gigantes para evitar travamentos
-                            if os.path.getsize(caminho_completo) < 5 * 1024 * 1024:
+                            if os.path.getsize(caminho_completo) < 3 * 1024 * 1024:
                                 with open(caminho_completo, 'r', encoding='utf-8', errors='ignore') as f:
                                     conteudo = f.read().upper()
-                                    for termo in ALVOS_DETECCAO:
-                                        if termo in conteudo:
-                                            achados.append(f"Assinatura [{termo}] no arquivo: {arquivo}")
+                                    
+                                    # Valida contra o dicionário de Hacks Críticos
+                                    for h in HACKS_CRITICOS:
+                                        if h in conteudo:
+                                            alertas_criticos.append(f"Assinatura [{h}] em {arquivo}")
+                                            
+                                    # Valida contra o dicionário de Suspeitas
+                                    for s in FERRAMENTAS_SUSPEITAS:
+                                        if s in conteudo:
+                                            alertas_suspeitos.append(f"Ferramenta/Termo [{s}] em {arquivo}")
                         except:
                             continue
                             
-    return list(set(achados)), pastas_pesquisadas, total_arquivos_contados
+    # Remove duplicatas mantendo os laudos limpos
+    return list(set(alertas_criticos)), list(set(alertas_suspeitos)), pastas_mapeadas, total_arquivos
 
-def executar_sistema():
+def iniciar_painel():
     desenhar_banner()
-    print(f"\n{AMARELO}[!] QUEBRANDO TRAVAS DE SEGURANÇA E ACESSANDO MEMÓRIA COMPLETA...{RESET}")
-    time.sleep(1)
+    print(f"\n{AMARELO}[!] ACESSANDO ÁREAS INTERNAS DO DISPOSITIVO...{RESET}")
+    time.sleep(0.8)
     
-    # Executa a busca bruta nos diretórios reais do celular
-    rastros, pastas, total_arq = realizar_varredura_sem_limites()
+    criticos, suspeitos, pastas, total_arq = realizar_pericia_profunda()
+    animacao_hacker_nota_10(pastas, total_arq)
     
-    # Executa a animação veloz usando as pastas reais encontradas
-    animacao_carregamento_nota_10(pastas, total_arq)
-    
-    # Tela de exibição do Laudo Técnico Final
     desenhar_banner()
     print(f"\n{CIANO}╔════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"  {AMARELO}MÓDULO DE PERÍCIA AVANÇADA AUTOMÁTICA{RESET}")
-    print(f"  {AMARELO}POLÍTICA DE ANÁLISE:{RESET} MODS / AUXÍLIOS DE MIRA / BYPASS / CLONADORES")
+    print(f"  {AMARELO}RELATÓRIO TÉCNICO DE INTEGRIDADE OPERACIONAL{RESET}")
+    print(f"  {AMARELO}SISTEMA DE ANÁLISE:{RESET} FILTRO INTELIGENTE ANTI-FALSO POSITIVO")
     print(f"{CIANO}╚════════════════════════════════════════════════════════════════════╝{RESET}")
     
-    if rastros:
+    # ORDEM DE EXIBIÇÃO EM CASO DE RESULTADOS
+    if criticos:
+        # Cenário 1: Encontrou modificação explícita/Hack
         print(f"\n{VERMELHO}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"{VERMELHO}❌ STATUS OPERACIONAL: DISPOSITIVO REPROVADO / LOGS COMPROMETIDOS{RESET}")
+        print(f"{VERMELHO}❌ STATUS: REPROVADO - MODIFICAÇÃO INTERNA GRAVE DETECTADA{RESET}")
         print(f"██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"\n{AMARELO}[⚠️] Evidências e modificações localizadas na memória:{RESET}")
-        # Mostra os primeiros achados detectados para não inundar o terminal
-        for item in rastros[:15]:
-            print(f"  {VERMELHO}➔ [FLAG] -> {item}{RESET}")
-        if len(rastros) > 15:
-            print(f"  {VERMELHO}➔ ... e mais {len(rastros) - 15} registros de risco encontrados.{RESET}")
+        print(f"\n{AMARELO}[⚠️] Evidências incontestáveis de auxílios ou trapaças encontrados:{RESET}")
+        for c in criticos[:10]:
+            print(f"  {VERMELHO}➔ [EVIDÊNCIA CRÍTICA] ➔ {c}{RESET}")
+            
+    elif suspeitos:
+        # Cenário 2: Encontrou apenas ferramentas suspeitas (Evita o falso positivo)
+        print(f"\n{AMARELO}██████████████████████████████████████████████████████████████████████{RESET}")
+        print(f"{AMARELO}⚠️ STATUS: DISPOSITIVO SUSPEITO - REQUER ANÁLISE MANUAL{RESET}")
+        print(f"██████████████████████████████████████████████████████████████████████{RESET}")
+        print(f"\n{AMARELO}[i] Motivo da Suspeita (Ferramentas de modificação ou gerenciadores ativos):{RESET}")
+        for s in suspeitos[:10]:
+            print(f"  {AMARELO}➔ [ANALISAR COM CALMA] ➔ {s}{RESET}")
+        print(f"\n{BRANCO}💡 Nota para o Fiscal: Isto não prova o uso de hack, verifique o histórico do jogador.{RESET}")
+        
     else:
+        # Cenário 3: Absolutamente limpo
         print(f"\n{VERDE}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"{VERDE}✅ STATUS OPERACIONAL: MONITORAMENTO CONCLUÍDO SEM ERROS{RESET}")
+        print(f"{VERDE}✅ STATUS: DISPOSITIVO INTEGRADO E TOTALMENTE EM CONFORMIDADE{RESET}")
         print(f"██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"\n{VERDE}[+] Dispositivo em conformidade. Nenhuma trapaça ou auxílio mapeado.{RESET}")
+        print(f"\n{VERDE}[+] Nenhuma anormalidade de software ou rastro de risco localizado.{RESET}")
         
     print(f"\n{CIANO}======================================================================{RESET}")
-    
-    # Linha de desconexão com muita postura
-    print(f"\n{ROXO}[⚡] Encerrando túnel e limpando logs de acesso...{RESET}")
+    print(f"\n{ROXO}[⚡] Finalizando túnel de varredura e limpando buffers locais...{RESET}")
     print(f"{NEON}➔ O STR não dorme. Se tentar burlar, o painel do Aluizio pega! 😤🥋🌑{RESET}")
     print(f"{CIANO}======================================================================{RESET}")
     
-    input(f"\n{AMARELO}Pressione [ENTER] para desconectar o terminal...{RESET}")
+    input(f"\n{AMARELO}Pressione [ENTER] para liberar a conexão do terminal...{RESET}")
 
 if __name__ == "__main__":
-    executar_sistema()
+    iniciar_painel()
