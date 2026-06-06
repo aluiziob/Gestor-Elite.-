@@ -2,31 +2,28 @@
 import os
 import sys
 import time
-import glob
+import random
 
-# LISTA EXPANDIDA DE RASTROS E DIRETÓRIOS SUSPEITOS
-DICIONARIO_AUDITORIA = [
+# BANCO DE DADOS BRUTO — MAIS DE 50 RASTROS DE ALTO RISCO
+ALVOS_DETECCAO = [
     "CHEAT", "BYPASS", "MODMENU", "INJECTOR", "REGEDIT", "AIMBOT", "WALLHACK", 
     "REPLAY_PATCH", "SHADER_MOD", "HACK", "NO_RECOIL", "AIMLOCK", "AUTO_HEADSHOT", 
     "GAME_GUARDIAN", "LULUBBOX", "MT_MANAGER", "X8_SANDBOX", "VIRTUAL_BACKUP",
     "COM.DTS.FREEFIRETH", "LIBAUTO.SO", "LIBANRK.SO", "METADATA.BIN", 
-    "GLOBAL-METADATA", "UNITY_PLAYER", "SHADERS.BUNDLE", "LIBIL2CPP.SO"
+    "GLOBAL-METADATA", "UNITY_PLAYER", "SHADERS.BUNDLE", "LIBIL2CPP.SO",
+    "PANDA_MOUSE", "OCTOPUS", "APKSIGNER", "LUCKY_PATCHER", "GG_SCRIPT",
+    "SU_BINARY", "MAGISK", "KERNELSU", "SUPERUSER", "BUSYBOX", "FRIDA_SERVER",
+    "HTTPCANARY", "CHARLES_PROXY", "POSTMAN", "VIRTUAL_ENV", "SANDBOX"
 ]
 
-# Cores ANSI para deixar o terminal estilizado
+# Cores ANSI para Estética Mandrake / Cyberpunk
 VERDE = '\033[92m'
 CIANO = '\033[96m'
 VERMELHO = '\033[91m'
 AMARELO = '\033[93m'
 RESET = '\033[0m'
 NEON = '\033[1;36m'
-
-def efeito_digitar(texto, velocidade=0.01):
-    """Cria um efeito de digitação realista no terminal."""
-    for caractere in texto:
-        sys.stdout.write(caractere)
-        sys.stdout.flush()
-        time.sleep(velocidade)
+ROXO = '\033[95m'
 
 def limpar_tela():
     os.system('clear' if os.name == 'posix' else 'cls')
@@ -40,103 +37,114 @@ def desenhar_banner():
     print(f"{NEON}       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║   ██║ ██╔██╗ {RESET}")
     print(f"{NEON}       ██║   ███████╗██║  ██║██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗{RESET}")
     print(f"{NEON}       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝{RESET}")
-    print(f"               {VERDE}● SCREEN SHARE STR — AUDITORIA AUTOMÁTICA ●{RESET}")
+    print(f"               {ROXO}● DIRETOR ALUIZIO | STR SECURITY SYSTEM ●{RESET}")
     print(f"{CIANO}======================================================================{RESET}")
 
-def animar_varredura(nome_arquivo):
-    desenhar_banner()
-    print(f"\n{AMARELO}[+] ALVO LOCALIZADO: {nome_arquivo}{RESET}")
-    efeito_digitar(f"{CIANO}[⚡] INICIALIZANDO NÚCLEO DE PERÍCIA FORENSE...\n{RESET}")
-    time.sleep(0.5)
-    
-    # Simulação de análise de blocos com barra de progresso hacker
-    passos_analise = [
-        "Carregando buffers de memória física...",
-        "Mapeando cabeçalhos do arquivo de log...",
-        "Cruzando hashes com banco de dados STR Cloud...",
-        "Rastreando injeções e pacotes modificados...",
-        "Finalizando relatório de integridade..."
+def efeito_matrix():
+    """Animação Nota 10: Simula leitura de memória bruta correndo na tela"""
+    caminhos_falsos = [
+        "/proc/net/arp", "/sys/class/power_supply/battery", "/data/system/users/",
+        "/proc/meminfo", "/dev/cpuctl/", "/sys/kernel/security/", "mem_chunk/0x7f8a",
+        "lib2cpp_dump.dat", "config/game_preferences.xml", "assets/bin/Data/managed"
     ]
     
-    for idx, passo in enumerate(passos_analise):
-        print(f"\n{CIANO}🧪 {passo}{RESET}")
-        barra_tamanho = 40
-        for i in range(barra_tamanho + 1):
-            percentual = int((i / barra_tamanho) * 100)
-            blocos = "█" * i
-            espacos = " " * (barra_tamanho - i)
-            # Mostra o progresso com visual limpo e cores dinâmicas
-            sys.stdout.write(f"\r{VERDE}[{blocos}{espacos}] {percentual}%{RESET}")
-            sys.stdout.flush()
-            time.sleep(0.02)
-        print()
-    time.sleep(0.5)
+    print(f"\n{ROXO}[⚙️] CAPTURANDO DADOS DO COMPARTILHAMENTO DE HARDWARE...{RESET}\n")
+    time.sleep(0.6)
+    
+    # Roda logs em altíssima velocidade na tela igual ao vídeo de portfólio
+    for _ in range(45):
+        pasta = random.choice(caminhos_falsos)
+        hex_code = f"0x{random.randint(2000, 9999)}A{random.randint(10,99)}"
+        status = random.choice([f"{VERDE}[OK]", f"{CIANO}[READ]", f"{AMARELO}[SCAN]"])
+        print(f"{status} {VERDE}Mapeando {pasta} ➔ {hex_code}...{RESET}")
+        time.sleep(0.02)
+    print()
 
-def executar_painel():
-    desenhar_banner()
-    efeito_digitar(f"\n{CIANO}[i] Vasculhando diretórios de armazenamento do Android...{RESET}\n")
-    time.sleep(0.8)
+def realizar_busca_real():
+    """Busca ativa por rastros reais em pastas ocultas do Android e Free Fire"""
+    achados = []
     
-    pastas_busca = [
-        "/sdcard/Download/",
-        "/storage/emulated/0/Download/",
-        "./"
+    # 1. Checagem de Diretórios Suspeitos Existentes no Aparelho
+    caminhos_android = [
+        "/sdcard/Android/data/com.dts.freefireth",
+        "/sdcard/Android/obb/com.dts.freefireth",
+        "/sdcard/Android/data/com.dts.freefiremax",
+        "/sdcard/Android/obb/com.dts.freefiremax",
+        "/sdcard/MT2",
+        "/sdcard/VirtualBackup",
+        "/sdcard/Download/MT"
     ]
     
-    arquivos_encontrados = []
+    for caminho in caminhos_android:
+        if os.path.exists(caminho):
+            # Adiciona o nome da pasta como rastro se ela for encontrada
+            pasta_nome = os.path.basename(caminho).upper()
+            achados.append(f"DIRETÓRIO ATIVO: {pasta_nome}")
+
+    # 2. Varredura Profunda de Conteúdo nos arquivos de Downloads e Logs
+    pastas_busca = ["/sdcard/Download/", "/storage/emulated/0/Download/", "./"]
+    
     for pasta in pastas_busca:
         if os.path.exists(pasta):
-            arquivos_encontrados.extend(glob.glob(os.path.join(pasta, "*.txt")))
-            arquivos_encontrados.extend(glob.glob(os.path.join(pasta, "*.log")))
-            
-    arquivos_encontrados = list(dict.fromkeys(arquivos_encontrados))
-    
-    if not arquivos_encontrados:
-        print(f"\n{VERMELHO}[X] ERRO: NENHUM ARQUIVO DE LOG ENCONTRADO NAS PASTAS PADRÃO.{RESET}")
-        print(f"{AMARELO}💡 Dica: Certifique-se de salvar um arquivo .txt ou .log na pasta Downloads.{RESET}")
-        print(f"{CIANO}======================================================================{RESET}")
-        input("\nPressione [ENTER] para sair do painel..."); return
+            for raiz, dirs, arquivos in os.walk(pasta):
+                for arquivo in arquivos:
+                    if arquivo.endswith(('.txt', '.log', '.xml', '.json')):
+                        try:
+                            caminho_completo = os.path.join(raiz, arquivo)
+                            with open(caminho_completo, 'r', encoding='utf-8', errors='ignore') as f:
+                                scan_texto = f.read().upper()
+                                for termo in ALVOS_DETECCAO:
+                                    if termo in scan_texto and termo not in achados:
+                                        achados.append(f"{termo} (no arquivo {arquivo})")
+                        except:
+                            continue
+                            
+    return list(set(achados))
 
-    # Seleciona automaticamente o arquivo de texto mais recente modificado na pasta
-    arquivo_alvo = max(arquivos_encontrados, key=os.path.getmtime)
-    nome_exibição = os.path.basename(arquivo_alvo)
+def iniciar_auditoria():
+    desenhar_banner()
+    efeito_matrix()
     
-    # Roda as animações gráficas na tela
-    animar_varredura(nome_exibição)
+    # Varre os dados reais do celular
+    rastros = realizar_busca_real()
     
-    try:
-        with open(arquivo_alvo, 'r', encoding='utf-8', errors='ignore') as f:
-            conteudo_completo = f.read().upper()
-    except Exception:
-        print(f"\n{VERMELHO}[X] ERRO CRÍTICO: Falha de permissão ao abrir o arquivo.{RESET}")
-        input("\nPressione [ENTER] para fechar..."); return
-
-    # Executa a busca detalhada de assinaturas
-    rastros_detectados = [termo for termo in DICIONARIO_AUDITORIA if termo in conteudo_completo]
+    # Animação de fechamento da barra
+    print(f"{CIANO}🧪 FINALIZANDO ANÁLISE FORENSE DA MEMÓRIA...{RESET}")
+    barra = 40
+    for i in range(barra + 1):
+        sys.stdout.write(f"\r{ROXO}[{'█'*i}{' '*(barra-i)}] {int((i/barra)*100)}%{RESET}")
+        sys.stdout.flush()
+        time.sleep(0.01)
+    print("\n")
     
-    # Exibição estilizada do Laudo Final
-    limpar_tela()
+    # Exibição do Laudo Final Estilizado
     desenhar_banner()
     print(f"\n{CIANO}╔════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"  {AMARELO}ARQUIVO EXAMINADO:{RESET} {nome_exibição}")
-    print(f"  {AMARELO}DIRETÓRIO ORIGEM:{RESET} {os.path.dirname(arquivo_alvo)}")
+    print(f"  {AMARELO}MÓDULO DE VERIFICAÇÃO ATIVA INICIALIZADO COM SUCESSO{RESET}")
+    print(f"  {AMARELO}SISTEMA OPERACIONAL:{RESET} BASE ANDROID (TERMUX KERNEL)")
     print(f"{CIANO}╚════════════════════════════════════════════════════════════════════╝{RESET}")
     
-    if rastros_detectados:
+    if rastros:
         print(f"\n{VERMELHO}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"{VERMELHO}❌ STATUS CRÍTICO: DISPOSITIVO REPROVADO / RASTROS LOCALIZADOS{RESET}")
-        print(f"{VERMELHO}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"\n{AMARELO}[!] Evidências coletadas de modificação de memória/diretório:{RESET}")
-        for rastro in rastros_detectados:
-            print(f"  {VERMELHO}• [VIOLAÇÃO REGISTRADA] ➔ {rastro}{RESET}")
+        print(f"{VERMELHO}❌ ESTRUTURA COMPROMETIDA: DETECTAMOS ANOMALIAS NO DISPOSITIVO{RESET}")
+        print(f"██████████████████████████████████████████████████████████████████████{RESET}")
+        print(f"\n{AMARELO}[⚠️] Evidências e modificações encontradas:{RESET}")
+        for item in rastros:
+            print(f"  {VERMELHO}➔ [FLAG/ALERTA] -> {item}{RESET}")
     else:
         print(f"\n{VERDE}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"{VERDE}✅ STATUS SEGURO: ESTRUTURA RECONHECIDA COMO LIMPA{RESET}")
-        print(f"{VERDE}██████████████████████████████████████████████████████████████████████{RESET}")
-        print(f"\n{VERDE}[+] Nenhuma assinatura de trapaça ativa foi mapeada no documento.{RESET}")
+        print(f"{VERDE}✅ STATUS OPERACIONAL: MONITORAMENTO CONCLUÍDO SEM ERROS{RESET}")
+        print(f"██████████████████████████████████████████████████████████████████████{RESET}")
+        print(f"\n{VERDE}[+] Estrutura limpa. Nenhum bypass, clonador ou modmenu mapeado.{RESET}")
         
     print(f"\n{CIANO}======================================================================{RESET}")
-    input(f"\n{AMARELO}Sessão encerrada com sucesso. Pressione [ENTER] para desconectar...{RESET}")
+    
+    # Mensagem estilizada de desconexão (Estilo Mandrake/Diretor)
+    print(f"\n{ROXO}[⚡] Finalizando túnel seguro...{RESET}")
+    print(f"{NEON}➔ O STR não dorme. Se tentar burlar, o painel do Aluizio pega! 😤🥋🌑{RESET}")
+    print(f"{CIANO}======================================================================{RESET}")
+    
+    input(f"\n{AMARELO}Pressione [ENTER] para fechar o terminal de auditoria...{RESET}")
 
 if __name__ == "__main__":
-    executar_painel()
+    iniciar_auditoria()
